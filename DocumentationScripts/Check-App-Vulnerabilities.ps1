@@ -37,7 +37,7 @@ function Get-ProductList () {
 
                 if ($null -ne $DisplayName) {
                     $DisplayVersion = $key.GetValue('DisplayVersion')
-                    if ($ExcludeApp -match $DisplayName) {
+                    if ($ExcludeApp -match [regex]::Escape($DisplayName)) {
                     Write-Host "Excluded $($DisplayName.Trim())"
                     }
                     else {
@@ -89,7 +89,7 @@ function Get-UsersProductList () {
     
                     if ($null -ne $DisplayName) {
                         $DisplayVersion = $key.GetValue('DisplayVersion')
-                        if ($ExcludeApp -match $DisplayName) {
+                        if ($ExcludeApp -match [regex]::Escape($DisplayName)) {
                         Write-Host "Excluded $($DisplayName.Trim())"
                         }
                         else {
