@@ -17,6 +17,9 @@ $VulDetails = 'vulnerabilityDetails'
 # Add any CVEs you wish to ignore here.
 $ExcludeCVES = @('CVE-3000-123','CVE-3000-456')
 
+# Add any Applications you wish to ignore here.
+$ExcludeApp = @('Zoom','')
+
 $registry_paths = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall', 'HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall'
 $vulMapScannerUri = 'https://vulmon.com/scannerapi_vv211'
 
@@ -34,7 +37,10 @@ function Get-ProductList () {
 
                 if ($null -ne $DisplayName) {
                     $DisplayVersion = $key.GetValue('DisplayVersion')
-
+                    if ($ExcludeApp -match $DisplayName) {
+                    Write-Host "Excluded $($DisplayName.Trim())"
+                    }
+                    else {
                     $Inventory.add([PSCustomObject]@{
                             PSTypeName      = 'System.Software.Inventory'
                             DisplayName     = $DisplayName.Trim()
@@ -42,6 +48,7 @@ function Get-ProductList () {
                             NameVersionPair = $DisplayName.Trim() + $DisplayVersion
                             Installed       = 'Machine Wide'
                         })
+                    }
                 }
             }
         }
@@ -82,6 +89,10 @@ function Get-UsersProductList () {
     
                     if ($null -ne $DisplayName) {
                         $DisplayVersion = $key.GetValue('DisplayVersion')
+                        if ($ExcludeApp -match $DisplayName) {
+                        Write-Host "Excluded $($DisplayName.Trim())"
+                        }
+                        else {
                         Write-Host "Adding $($DisplayName.Trim())"
                         $Inventory.add([PSCustomObject]@{
                                 PSTypeName      = 'System.Software.Inventory'
@@ -90,6 +101,7 @@ function Get-UsersProductList () {
                                 NameVersionPair = $DisplayName.Trim() + $DisplayVersion
                                 Installed       = $Username
                             })
+                        }
                     }
                 }
             }
